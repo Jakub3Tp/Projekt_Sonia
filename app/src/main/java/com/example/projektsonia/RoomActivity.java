@@ -10,14 +10,23 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class RoomActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_room);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.room), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            return insets;
+        });
 
         TextView title = findViewById(R.id.tvRoomName);
         LinearLayout deviceContainer = findViewById(R.id.deviceContainer);
@@ -30,21 +39,24 @@ public class RoomActivity extends AppCompatActivity {
 
         if (roomName != null) {
             if (roomName.equals("Living Room")) {
-                addDevice(deviceContainer, "Lights");
-                addDevice(deviceContainer, "Curtains");
+                device(deviceContainer, "Lights");
+                device(deviceContainer, "Curtains");
             } else if (roomName.equals("Bedroom")) {
-                addDevice(deviceContainer, "Lights");
-                addDevice(deviceContainer, "TV");
-                addDevice(deviceContainer, "Curtains");
+                device(deviceContainer, "Lights");
+                device(deviceContainer, "TV");
+                device(deviceContainer, "Curtains");
             } else if (roomName.equals("Kitchen")) {
-                addDevice(deviceContainer, "Lights");
-                addDevice(deviceContainer, "Curtains");
-                addDevice(deviceContainer, "Induction hob");
+                device(deviceContainer, "Lights");
+                device(deviceContainer, "Curtains");
+                device(deviceContainer, "Induction hob");
+            } else if (roomName.equals("Bathroom")) {
+                device(deviceContainer, "Lights");
+                device(deviceContainer, "Washing machine");
             }
         }
     }
 
-    private void addDevice(LinearLayout container, String deviceName) {
+    private void device(LinearLayout container, String deviceName) {
         LinearLayout deviceLayout = new LinearLayout(this);
         deviceLayout.setOrientation(LinearLayout.HORIZONTAL);
         deviceLayout.setGravity(Gravity.CENTER_VERTICAL);
@@ -53,9 +65,10 @@ public class RoomActivity extends AppCompatActivity {
         deviceLayout.setBackgroundResource(R.drawable.room_in_bg);
 
         LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
+
         layout.setMargins(16, 16, 16, 16);
         deviceLayout.setLayoutParams(layout);
 
@@ -66,7 +79,7 @@ public class RoomActivity extends AppCompatActivity {
 
         switch (deviceName) {
             case "Lights":
-                icon.setImageResource(R.mipmap.lightburb);
+                icon.setImageResource(R.mipmap.lights);
                 break;
             case "Curtains":
                 icon.setImageResource(R.mipmap.curtains);
@@ -74,11 +87,17 @@ public class RoomActivity extends AppCompatActivity {
             case "TV":
                 icon.setImageResource(R.mipmap.television);
                 break;
+            case "Induction hob":
+                icon.setImageResource(R.mipmap.induction);
+                break;
+            case "Washing machine":
+                icon.setImageResource(R.mipmap.washing);
+                break;
         }
 
         TextView name = new TextView(this);
         name.setText(deviceName);
-        name.setTextColor(getResources().getColor(android.R.color.white));
+        name.setTextColor(getColor(android.R.color.white));
         name.setTextSize(18);
         name.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
