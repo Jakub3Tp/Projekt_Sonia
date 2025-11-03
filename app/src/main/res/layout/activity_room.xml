@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/room"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_gradient"
@@ -22,14 +23,14 @@
                 android:layout_height="wrap_content"
                 android:text="Go Back"
                 android:backgroundTint="#17A4FF"
-                android:textColor="@android:color/white"/>
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/tvRoomName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Room Name"
-                android:textColor="@android:color/white"
+                android:textColor="@color/white"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp"/>
@@ -40,6 +41,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="24dp"/>
+            android:layout_marginTop="24dp">
+        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add new device"
+            android:backgroundTint="#17A4FF"
+            android:textColor="@color/white"
+            android:layout_gravity="center"/>
     </LinearLayout>
 </ScrollView>
