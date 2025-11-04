@@ -3,6 +3,7 @@ package com.example.sonia;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,11 +33,18 @@ public class RoomActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.tvRoomName);
         LinearLayout deviceContainer = findViewById(R.id.deviceContainer);
         Button btnBack = findViewById(R.id.btnBack);
+        Button btnAdd = findViewById(R.id.addDev);
 
         String roomName = getIntent().getStringExtra("roomName");
         title.setText(roomName);
 
         btnBack.setOnClickListener(v -> finish());
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         if (roomName != null) {
             if (roomName.equals("Living Room")) {
