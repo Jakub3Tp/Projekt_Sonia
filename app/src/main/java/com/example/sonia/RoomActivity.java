@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,39 +48,45 @@ public class RoomActivity extends AppCompatActivity {
         });
 
         if (roomName != null) {
-            if (roomName.equals("Living Room")) {
-                device(deviceContainer, "Lights");
-                device(deviceContainer, "Curtains");
-            } else if (roomName.equals("Bedroom")) {
-                device(deviceContainer, "Lights");
-                device(deviceContainer, "TV");
-                device(deviceContainer, "Curtains");
-            } else if (roomName.equals("Kitchen")) {
-                device(deviceContainer, "Lights");
-                device(deviceContainer, "Curtains");
-                device(deviceContainer, "Induction hob");
-            } else if (roomName.equals("Bathroom")) {
-                device(deviceContainer, "Lights");
-                device(deviceContainer, "Washing machine");
+            switch (roomName) {
+                case "Living Room":
+                    device(deviceContainer, "Lights");
+                    device(deviceContainer, "Curtains");
+                    break;
+                case "Bedroom":
+                    device(deviceContainer, "Lights");
+                    device(deviceContainer, "TV");
+                    device(deviceContainer, "Curtains");
+                    break;
+                case "Kitchen":
+                    device(deviceContainer, "Lights");
+                    device(deviceContainer, "Curtains");
+                    device(deviceContainer, "Induction hob");
+                    break;
+                case "Bathroom":
+                    device(deviceContainer, "Lights");
+                    device(deviceContainer, "Washing machine");
+                    break;
             }
         }
     }
 
     private void device(LinearLayout container, String deviceName) {
         LinearLayout deviceLayout = new LinearLayout(this);
-        deviceLayout.setOrientation(LinearLayout.HORIZONTAL);
-        deviceLayout.setGravity(Gravity.CENTER_VERTICAL);
+        deviceLayout.setOrientation(LinearLayout.VERTICAL);
         deviceLayout.setPadding(24, 24, 24, 24);
-
         deviceLayout.setBackgroundResource(R.drawable.room_in_bg);
 
         LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-
         layout.setMargins(16, 16, 16, 16);
         deviceLayout.setLayoutParams(layout);
+
+        LinearLayout topRow = new LinearLayout(this);
+        topRow.setOrientation(LinearLayout.HORIZONTAL);
+        topRow.setGravity(Gravity.CENTER_VERTICAL);
 
         ImageView icon = new ImageView(this);
         LinearLayout.LayoutParams icons = new LinearLayout.LayoutParams(96, 96);
@@ -110,21 +117,78 @@ public class RoomActivity extends AppCompatActivity {
         name.setTextSize(18);
         name.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
 
-        @SuppressLint("UseSwitchCompatOrMaterialCode") Switch sw = new Switch(this);
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch sw = new Switch(this);
+        TextView stateLabel = new TextView(this);
+        stateLabel.setText("Off");
+        stateLabel.setTextColor(getColor(android.R.color.white));
+        stateLabel.setPadding(8, 0, 0, 0);
+
+        if (deviceName.equals("Curtains")) {
+            stateLabel.setText("Closed");
+        } else {
+            stateLabel.setText("Off");
+        }
+
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked){
+            String state;
+            if (deviceName.equals("Curtains")) {
+                state = isChecked ? "Open" : "Closed";
+            } else {
+                state = isChecked ? "On" : "Off";
+            }
+
+            if (isChecked) {
                 deviceLayout.setBackgroundResource(R.drawable.room_in_bg_active);
             } else {
                 deviceLayout.setBackgroundResource(R.drawable.room_in_bg);
             }
-            String state = isChecked ? "ON" : "OFF";
-            Toast.makeText(this, deviceName + " turned " + state, Toast.LENGTH_SHORT).show();
 
+            stateLabel.setText(state);
+            Toast.makeText(this, deviceName + " turned " + state, Toast.LENGTH_SHORT).show();
         });
 
-        deviceLayout.addView(icon);
-        deviceLayout.addView(name);
-        deviceLayout.addView(sw);
+        topRow.addView(icon);
+        topRow.addView(name);
+        topRow.addView(sw);
+        topRow.addView(stateLabel);
+        deviceLayout.addView(topRow);
+
+        if (deviceName.equals("Lights")) {
+            LinearLayout lightSection = new LinearLayout(this);
+            lightSection.setOrientation(LinearLayout.VERTICAL);
+            lightSection.setPadding(0, 16, 0, 0);
+
+            SeekBar lightSeekBar = new SeekBar(this);
+            lightSeekBar.setMax(100);
+            lightSeekBar.setProgress(50);
+
+            TextView lightValue = new TextView(this);
+            lightValue.setText("Brightness: 50%");
+            lightValue.setTextColor(getColor(android.R.color.white));
+
+            lightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    lightValue.setText("Brightness: " + progress + "%");
+                    float alpha = 0.5f + (progress / 200f);
+                    lightValue.setAlpha(alpha);
+                }
+
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+
+            lightSection.addView(lightSeekBar);
+            lightSection.addView(lightValue);
+            deviceLayout.addView(lightSection);
+        }
+
         container.addView(deviceLayout);
     }
+
 }
