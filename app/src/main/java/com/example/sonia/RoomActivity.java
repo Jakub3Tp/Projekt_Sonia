@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -40,11 +41,30 @@ public class RoomActivity extends AppCompatActivity {
         title.setText(roomName);
 
         btnBack.setOnClickListener(v -> finish());
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        btnAdd.setOnClickListener(view -> {
+            final String[] availableDevices = {"Lights", "Curtains", "TV", "Induction hob", "Washing machine"};
 
-            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Add new device");
+
+            final int[] selectedIndex = {-1};
+
+            builder.setSingleChoiceItems(availableDevices, -1, (dialog, which) -> {
+                selectedIndex[0] = which;
+            });
+
+            builder.setPositiveButton("Add", (dialog, which) ->{
+                if (selectedIndex[0] != -1) {
+                    String selectedDevice = availableDevices[selectedIndex[0]];
+                    device(deviceContainer, selectedDevice);
+                    Toast.makeText(this, selectedDevice + " added ", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Please select device", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            builder.show();
         });
 
         if (roomName != null) {
