@@ -52,5 +52,13 @@
             android:backgroundTint="#17A4FF"
             android:textColor="@color/white"
             android:layout_gravity="center"/>
+        <Button
+            android:id="@+id/removeDev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove device"
+            android:backgroundTint="#17A4FF"
+            android:textColor="@color/white"
+            android:layout_gravity="center"/>
     </LinearLayout>
 </ScrollView>

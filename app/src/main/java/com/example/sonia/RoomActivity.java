@@ -36,6 +36,7 @@ public class RoomActivity extends AppCompatActivity {
         LinearLayout deviceContainer = findViewById(R.id.deviceContainer);
         Button btnBack = findViewById(R.id.btnBack);
         Button btnAdd = findViewById(R.id.addDev);
+        Button btnRemove = findViewById(R.id.removeDev);
 
         String roomName = getIntent().getStringExtra("roomName");
         title.setText(roomName);
