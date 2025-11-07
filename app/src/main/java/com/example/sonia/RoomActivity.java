@@ -42,7 +42,7 @@ public class RoomActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> finish());
         btnAdd.setOnClickListener(view -> {
-            final String[] availableDevices = {"Lights", "Curtains", "TV", "Induction hob", "Washing machine"};
+            final String[] availableDevices = {"Lights", "Curtains", "TV", "Induction hob", "Washing machine", "Lock", "Blinds", "AC System", "Security Cameras"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Add new device");
@@ -129,6 +129,18 @@ public class RoomActivity extends AppCompatActivity {
             case "Washing machine":
                 icon.setImageResource(R.mipmap.washing);
                 break;
+            case "Lock":
+                icon.setImageResource(R.mipmap.lock);
+                break;
+            case "Blinds":
+                icon.setImageResource(R.mipmap.blinds);
+                break;
+            case "AC System":
+                icon.setImageResource(R.mipmap.air);
+                break;
+            case "Security Cameras":
+                icon.setImageResource(R.mipmap.security);
+                break;
         }
 
         TextView name = new TextView(this);
@@ -152,7 +164,7 @@ public class RoomActivity extends AppCompatActivity {
 
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             String state;
-            if (deviceName.equals("Curtains")) {
+            if (deviceName.equals("Curtains") || deviceName.equals("Lock")) {
                 state = isChecked ? "Open" : "Closed";
             } else {
                 state = isChecked ? "On" : "Off";
@@ -165,7 +177,11 @@ public class RoomActivity extends AppCompatActivity {
             }
 
             stateLabel.setText(state);
-            Toast.makeText(this, deviceName + " turned " + state, Toast.LENGTH_SHORT).show();
+            if (deviceName.equals("Curtains") || deviceName.equals("Lock")){
+                Toast.makeText(this, deviceName + " " + state, Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(this, deviceName + " turned " + state, Toast.LENGTH_SHORT).show();
+            }
         });
 
         topRow.addView(icon);
