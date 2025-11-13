@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,7 +46,34 @@ public class RoomActivity extends AppCompatActivity {
         String roomName = getIntent().getStringExtra("roomName");
         title.setText(roomName);
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> {
+            int count = deviceContainer.getChildCount();
+            long totalDuration = 0;
+
+            for (int i = 0; i < count; i++){
+                View device = deviceContainer.getChildAt(i);
+                Animation anim;
+                switch (i % 4){
+                    case 0:
+                        anim = AnimationUtils.loadAnimation(this, R.anim.slide_left);
+                        break;
+                    case 1:
+                        anim = AnimationUtils.loadAnimation(this, R.anim.slide_right);
+                        break;
+                    case 2:
+                        anim = AnimationUtils.loadAnimation(this, R.anim.slide_top);
+                        break;
+                    default:
+                        anim = AnimationUtils.loadAnimation(this, R.anim.slide_bottom);
+                        break;
+                }
+                anim.setStartOffset(i * 120);
+                totalDuration = Math.max(totalDuration, anim.getDuration() + anim.getStartOffset());
+                device.startAnimation(anim);
+            }
+            finish();
+        });
+
         btnAdd.setOnClickListener(view -> {
             final String[] availableDevices = {"Lights", "Curtains", "TV", "Induction hob", "Washing machine", "Lock", "Blinds", "AC System", "Security Cameras", "Robot vacuum", "Electric kettle", "Tumble dryer"};
 
@@ -319,5 +348,22 @@ public class RoomActivity extends AppCompatActivity {
         }
 
         container.addView(deviceLayout);
+        Animation anim;
+        switch (container.getChildCount() % 4){
+            case 0:
+                anim = AnimationUtils.loadAnimation(this, R.anim.slide_left);
+                break;
+            case 1:
+                anim = AnimationUtils.loadAnimation(this, R.anim.slide_right);
+                break;
+            case 2:
+                anim = AnimationUtils.loadAnimation(this, R.anim.slide_top);
+                break;
+            default:
+                anim = AnimationUtils.loadAnimation(this, R.anim.slide_bottom);
+                break;
+        }
+        anim.setStartOffset(container.getChildCount() * 150L);
+        deviceLayout.startAnimation(anim);
     }
 }
