@@ -1,6 +1,10 @@
 package com.example.sonia;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -224,6 +228,13 @@ public class RoomActivity extends AppCompatActivity {
 
         sw.setOnCheckedChangeListener((buttonView, isChecked) -> {
             String state;
+            ObjectAnimator scaleX = ObjectAnimator.ofFloat(deviceLayout, "scaleX", 1f, 1.05f, 1f);
+            ObjectAnimator scaleY = ObjectAnimator.ofFloat(deviceLayout, "scaleY", 1f, 1.05f, 1f);
+            AnimatorSet set = new AnimatorSet();
+            set.playTogether(scaleX, scaleY);
+            set.setDuration(300);
+            set.start();
+
             if (deviceName.equals("Curtains") || deviceName.equals("Lock")) {
                 state = isChecked ? "Open" : "Closed";
             } else {
@@ -278,6 +289,33 @@ public class RoomActivity extends AppCompatActivity {
             lightSection.addView(lightSeekBar);
             lightSection.addView(lightValue);
             deviceLayout.addView(lightSection);
+        }
+        if (deviceName.equals("Security Cameras")){
+            LinearLayout cameraSection = new LinearLayout(this);
+            cameraSection.setOrientation(LinearLayout.VERTICAL);
+            cameraSection.setPadding(0, 16, 0, 0);
+
+            Button button = new Button(this);
+            button.setText("Check footage");
+            button.setTextColor(Color.WHITE);
+            button.setBackgroundResource(R.drawable.room_in_bg_active);
+
+
+            TextView cameraCheck = new TextView(this);
+            cameraCheck.setText("Camera saves recorded footage every 24 hours or until you turn it off.");
+            cameraCheck.setTextColor(getColor(android.R.color.white));
+
+            button.setOnClickListener(view ->  {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("No footage in test build of the app")
+                            .setTitle("Recorded Footage");
+
+                builder.show();
+            });
+
+            cameraSection.addView(button);
+            cameraSection.addView(cameraCheck);
+            deviceLayout.addView(cameraSection);
         }
 
         container.addView(deviceLayout);
