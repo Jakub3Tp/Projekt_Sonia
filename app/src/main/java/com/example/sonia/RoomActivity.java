@@ -19,7 +19,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-
 public class RoomActivity extends AppCompatActivity {
 
     @Override
@@ -43,7 +42,7 @@ public class RoomActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> finish());
         btnAdd.setOnClickListener(view -> {
-            final String[] availableDevices = {"Lights", "Curtains", "TV", "Induction hob", "Washing machine", "Lock", "Blinds", "AC System", "Security Cameras"};
+            final String[] availableDevices = {"Lights", "Curtains", "TV", "Induction hob", "Washing machine", "Lock", "Blinds", "AC System", "Security Cameras", "Robot vacuum", "Electric kettle", "Tumble dryer"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Add new device");
@@ -68,11 +67,59 @@ public class RoomActivity extends AppCompatActivity {
             builder.show();
         });
 
+        btnRemove.setOnClickListener(v -> {
+            int count = deviceContainer.getChildCount();
+            if (count == 0) {
+                Toast.makeText(this, "No devices to remove", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String[] devices = new String[count];
+            for (int i = 0; i < count; i++) {
+                View deviceView = deviceContainer.getChildAt(i);
+                TextView devNameView = null;
+
+
+                LinearLayout deviceRow = (LinearLayout) ((LinearLayout) deviceView).getChildAt(0);
+                for (int j = 0; j < deviceRow.getChildCount(); j++) {
+                    View innerView = deviceRow.getChildAt(j);
+                    if (innerView instanceof TextView) {
+                        devNameView = (TextView) innerView;
+                        break;
+                    }
+                }
+                devices[i] = devNameView.getText().toString();
+            }
+
+            final int[] selectedIndex = {-1};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select device to remove");
+
+            builder.setSingleChoiceItems(devices, -1, (dialog, which) -> {
+                selectedIndex[0] = which;
+            });
+
+            builder.setPositiveButton("Remove", (dialog, which) -> {
+                if (selectedIndex[0] != -1) {
+                    int index = selectedIndex[0];
+                    deviceContainer.removeViewAt(index);
+                    Toast.makeText(this, devices[index] + " removed", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Please select device", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+            builder.show();
+        });
+
         if (roomName != null) {
             switch (roomName) {
                 case "Living Room":
                     device(deviceContainer, "Lights");
                     device(deviceContainer, "Curtains");
+                    device(deviceContainer, "Robot vacuum");
                     break;
                 case "Bedroom":
                     device(deviceContainer, "Lights");
@@ -83,10 +130,12 @@ public class RoomActivity extends AppCompatActivity {
                     device(deviceContainer, "Lights");
                     device(deviceContainer, "Curtains");
                     device(deviceContainer, "Induction hob");
+                    device(deviceContainer, "Electric kettle");
                     break;
                 case "Bathroom":
                     device(deviceContainer, "Lights");
                     device(deviceContainer, "Washing machine");
+                    device(deviceContainer, "Tumble dryer");
                     break;
             }
         }
@@ -142,6 +191,16 @@ public class RoomActivity extends AppCompatActivity {
             case "Security Cameras":
                 icon.setImageResource(R.mipmap.security);
                 break;
+            case "Electric kettle":
+                icon.setImageResource(R.mipmap.kettle);
+                break;
+            case "Tumble dryer":
+                icon.setImageResource(R.mipmap.dryer);
+                break;
+            case "Robot vacuum":
+                icon.setImageResource(R.mipmap.vacuum);
+                break;
+
         }
 
         TextView name = new TextView(this);
@@ -180,7 +239,7 @@ public class RoomActivity extends AppCompatActivity {
             stateLabel.setText(state);
             if (deviceName.equals("Curtains") || deviceName.equals("Lock")){
                 Toast.makeText(this, deviceName + " " + state, Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
                 Toast.makeText(this, deviceName + " turned " + state, Toast.LENGTH_SHORT).show();
             }
         });
@@ -212,12 +271,8 @@ public class RoomActivity extends AppCompatActivity {
                     lightValue.setAlpha(alpha);
                 }
 
-                @Override public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-                @Override public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
+                @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                @Override public void onStopTrackingTouch(SeekBar seekBar) {}
             });
 
             lightSection.addView(lightSeekBar);
@@ -227,5 +282,4 @@ public class RoomActivity extends AppCompatActivity {
 
         container.addView(deviceLayout);
     }
-
 }
