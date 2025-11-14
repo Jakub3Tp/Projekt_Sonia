@@ -1,6 +1,5 @@
 package com.example.sonia;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -46,33 +45,7 @@ public class RoomActivity extends AppCompatActivity {
         String roomName = getIntent().getStringExtra("roomName");
         title.setText(roomName);
 
-        btnBack.setOnClickListener(v -> {
-            int count = deviceContainer.getChildCount();
-            long totalDuration = 0;
-
-            for (int i = 0; i < count; i++){
-                View device = deviceContainer.getChildAt(i);
-                Animation anim;
-                switch (i % 4){
-                    case 0:
-                        anim = AnimationUtils.loadAnimation(this, R.anim.slide_left);
-                        break;
-                    case 1:
-                        anim = AnimationUtils.loadAnimation(this, R.anim.slide_right);
-                        break;
-                    case 2:
-                        anim = AnimationUtils.loadAnimation(this, R.anim.slide_top);
-                        break;
-                    default:
-                        anim = AnimationUtils.loadAnimation(this, R.anim.slide_bottom);
-                        break;
-                }
-                anim.setStartOffset(i * 120);
-                totalDuration = Math.max(totalDuration, anim.getDuration() + anim.getStartOffset());
-                device.startAnimation(anim);
-            }
-            finish();
-        });
+        btnBack.setOnClickListener(v -> finish());
 
         btnAdd.setOnClickListener(view -> {
             final String[] availableDevices = {"Lights", "Curtains", "TV", "Induction hob", "Washing machine", "Lock", "Blinds", "AC System", "Security Cameras", "Robot vacuum", "Electric kettle", "Tumble dryer"};
@@ -349,21 +322,13 @@ public class RoomActivity extends AppCompatActivity {
 
         container.addView(deviceLayout);
         Animation anim;
-        switch (container.getChildCount() % 4){
-            case 0:
-                anim = AnimationUtils.loadAnimation(this, R.anim.slide_left);
-                break;
-            case 1:
-                anim = AnimationUtils.loadAnimation(this, R.anim.slide_right);
-                break;
-            case 2:
-                anim = AnimationUtils.loadAnimation(this, R.anim.slide_top);
-                break;
-            default:
-                anim = AnimationUtils.loadAnimation(this, R.anim.slide_bottom);
-                break;
+        if (container.getChildCount() % 2 == 0) {
+            anim = AnimationUtils.loadAnimation(this, R.anim.slide_left);
+        } else {
+            anim = AnimationUtils.loadAnimation(this, R.anim.slide_right);
         }
-        anim.setStartOffset(container.getChildCount() * 150L);
+        anim.setStartOffset(container.getChildCount() * 250L);
         deviceLayout.startAnimation(anim);
     }
+
 }

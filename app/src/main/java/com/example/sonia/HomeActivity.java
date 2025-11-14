@@ -1,15 +1,15 @@
 package com.example.sonia;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
+
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,12 +28,30 @@ import androidx.core.view.WindowInsetsCompat;
 public class HomeActivity extends AppCompatActivity {
     GridLayout gridRooms;
     Uri selectedImageUri;
+    private ImageView imagePrev;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
+        LinearLayout container = findViewById(R.id.main);
+        container.post(() -> {
+            int count = container.getChildCount();
+
+            for (int i = 0; i < count; i++){
+                View item = container.getChildAt(i);
+
+                Animation anim;
+                if (i % 2 == 0) {
+                    anim = AnimationUtils.loadAnimation(this, R.anim.slide_left);
+                } else {
+                    anim = AnimationUtils.loadAnimation(this, R.anim.slide_right);
+                }
+                anim.setStartOffset(i * 250L);
+                item.startAnimation(anim);
+            }
+        });
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             return insets;
@@ -53,7 +71,7 @@ public class HomeActivity extends AppCompatActivity {
         View dialogView = inflater.inflate(R.layout.dialog_room, null);
 
         EditText roomName = dialogView.findViewById(R.id.roomName);
-        ImageView imagePrev = dialogView.findViewById(R.id.imagePrev);
+        imagePrev = dialogView.findViewById(R.id.imagePrev);
         Button btnImage = dialogView.findViewById(R.id.btnImage);
 
         btnImage.setOnClickListener(v -> pickImage.launch("image/*"));
@@ -77,6 +95,9 @@ public class HomeActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> pickImage = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
         if (uri != null){
             selectedImageUri = uri;
+            if (imagePrev != null)
+                imagePrev.setImageURI(uri);
+
         }
     });
     private void addRoom(String room, Uri imageUri) {
