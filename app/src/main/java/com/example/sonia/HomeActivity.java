@@ -26,8 +26,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class HomeActivity extends AppCompatActivity {
-    GridLayout gridRooms;
-    Uri selectedImageUri;
+    private GridLayout gridRooms;
+    private Uri selectedImageUri;
     private ImageView imagePrev;
 
     @Override

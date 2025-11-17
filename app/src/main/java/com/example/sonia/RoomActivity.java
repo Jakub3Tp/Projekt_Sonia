@@ -9,10 +9,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RoomActivity extends AppCompatActivity {
 
@@ -320,6 +326,77 @@ public class RoomActivity extends AppCompatActivity {
             deviceLayout.addView(cameraSection);
         }
 
+        if (deviceName.equals("AC System")){
+            LinearLayout acSection = new LinearLayout(this);
+            acSection.setOrientation(LinearLayout.VERTICAL);
+            acSection.setPadding(0, 16, 0, 0);
+
+            Spinner spinner = new Spinner(this);
+            spinner.setBackgroundResource(R.drawable.room_in_bg_active);
+
+            List<String> temp = new ArrayList<>();
+            for (int i = 16; i <= 30; i++){
+                temp.add(i + "°C");
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_spinner_dropout_item,
+                    temp
+            );
+
+            spinner.setAdapter(adapter);
+
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String selectedTemp = temp.get(position);
+                    Toast.makeText(RoomActivity.this, "Temperature set to " + selectedTemp, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            TextView acCheck = new TextView(this);
+            acCheck.setText("Choose temperature");
+            acCheck.setTextColor(getColor(android.R.color.white));
+
+            acSection.addView(spinner);
+            acSection.addView(acCheck);
+            deviceLayout.addView(acSection);
+        }
+
+        if (deviceName.equals("Washing machine")){
+            LinearLayout cameraSection = new LinearLayout(this);
+            cameraSection.setOrientation(LinearLayout.VERTICAL);
+            cameraSection.setPadding(0, 16, 0, 0);
+
+            Button button = new Button(this);
+            button.setText("Check footage");
+            button.setTextColor(Color.WHITE);
+            button.setBackgroundResource(R.drawable.room_in_bg_active);
+
+
+            TextView cameraCheck = new TextView(this);
+            cameraCheck.setText("Camera saves recorded footage every 24 hours or until you turn it off.");
+            cameraCheck.setTextColor(getColor(android.R.color.white));
+
+            button.setOnClickListener(view ->  {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("No footage in test build of the app")
+                        .setTitle("Recorded Footage");
+
+                builder.show();
+            });
+
+            cameraSection.addView(button);
+            cameraSection.addView(cameraCheck);
+            deviceLayout.addView(cameraSection);
+        }
+
         container.addView(deviceLayout);
         Animation anim;
         if (container.getChildCount() % 2 == 0) {
@@ -327,7 +404,7 @@ public class RoomActivity extends AppCompatActivity {
         } else {
             anim = AnimationUtils.loadAnimation(this, R.anim.slide_right);
         }
-        anim.setStartOffset(container.getChildCount() * 250L);
+        anim.setStartOffset(container.getChildCount() * 200L);
         deviceLayout.startAnimation(anim);
     }
 
