@@ -41,11 +41,9 @@ dependencies {
 
     val roomVersion = "2.6.1"
 
-    // Room (Java)
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
-    // (Опционально) Если хочешь LiveData
     implementation("androidx.room:room-ktx:$roomVersion")
 
     testImplementation(libs.junit)
