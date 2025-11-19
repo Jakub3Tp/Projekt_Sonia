@@ -19,6 +19,9 @@ public interface DeviceDao {
     @Delete
     void deleteDevice(DeviceEntity device);
 
+    @Query("DELETE FROM devices WHERE roomOwnerId = :roomId")
+    void deleteDevicesForRoom(long roomId);
+
     @Query("SELECT * FROM devices WHERE roomOwnerId = :roomId")
     List<DeviceEntity> getDevicesForRoom(long roomId);
 

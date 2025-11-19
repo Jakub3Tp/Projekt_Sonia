@@ -58,6 +58,7 @@ public class RoomActivity extends AppCompatActivity {
         Button btnBack = findViewById(R.id.btnBack);
         Button btnAdd = findViewById(R.id.addDev);
         Button btnRemove = findViewById(R.id.removeDev);
+        Button btnRemoveRoom = findViewById(R.id.removeRoom);
 
         String roomName = getIntent().getStringExtra("roomName");
         title.setText(roomName);
@@ -161,6 +162,36 @@ public class RoomActivity extends AppCompatActivity {
 
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             builder.show();
+        });
+
+        btnRemoveRoom.setOnClickListener(v -> {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Remove room")
+                    .setMessage("Are you sure you want to remove this room?")
+                    .setPositiveButton("Confirm", (dialog, which) -> {
+
+                        Executors.newSingleThreadExecutor().execute(() -> {
+                            db.roomDao().deleteByName(roomName);
+
+                            RoomEntity room = db.roomDao().getRoomByName(roomName);
+                            if (room != null)
+                                db.deviceDao().deleteDevicesForRoom(room.roomId);
+
+                            runOnUiThread(() -> {
+                                Toast.makeText(this, "Room removed", Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent(this, HomeActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                finish();
+                            });
+                        });
+
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                    .show();
+
         });
     }
 

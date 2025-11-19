@@ -18,6 +18,9 @@ public interface RoomDao {
     @Query("SELECT * FROM rooms")
     List<RoomEntity> getAllRooms();
 
+    @Query("DELETE FROM rooms WHERE name = :name")
+    void deleteByName(String name);
+
     @Query("SELECT * FROM rooms WHERE name = :name LIMIT 1")
     RoomEntity getRoomByName(String name);
 
