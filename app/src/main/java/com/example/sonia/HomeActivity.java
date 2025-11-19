@@ -12,8 +12,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,7 +42,30 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
+
+        LinearLayout container = findViewById(R.id.main);
+        container.post(() -> {
+            int count = container.getChildCount();
+
+            for (int i = 0; i < count; i++){
+                View item = container.getChildAt(i);
+
+                Animation anim;
+                if (i % 2 == 0) {
+                    anim = AnimationUtils.loadAnimation(this, R.anim.slide_left);
+                } else {
+                    anim = AnimationUtils.loadAnimation(this, R.anim.slide_right);
+                }
+                anim.setStartOffset(i * 250L);
+                item.startAnimation(anim);
+            }
+        });
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            return insets;
+        });
 
         db = AppDatabase.getInstance(this);
         gridRooms = findViewById(R.id.gridRooms);
