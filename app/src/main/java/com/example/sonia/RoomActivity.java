@@ -3,6 +3,7 @@ package com.example.sonia;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -51,16 +52,6 @@ public class RoomActivity extends AppCompatActivity {
         });
 
         db = AppDatabase.getInstance(this);
-
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<RoomEntity> rooms = db.roomDao().getAllRooms();
-            if (rooms == null || rooms.size() == 0) {
-                db.roomDao().insertRoom(new RoomEntity("Living Room"));
-                db.roomDao().insertRoom(new RoomEntity("Bedroom"));
-                db.roomDao().insertRoom(new RoomEntity("Kitchen"));
-                db.roomDao().insertRoom(new RoomEntity("Bathroom"));
-            }
-        });
 
         TextView title = findViewById(R.id.tvRoomName);
         LinearLayout deviceContainer = findViewById(R.id.deviceContainer);
@@ -171,7 +162,6 @@ public class RoomActivity extends AppCompatActivity {
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             builder.show();
         });
-
     }
 
     private void loadDevicesForRoom(String roomName, LinearLayout deviceContainer) {

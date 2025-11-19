@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {RoomEntity.class, DeviceEntity.class}, version = 1)
+@Database(entities = {RoomEntity.class, DeviceEntity.class}, version = 5, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String DB_NAME = "sonia_db";
     private static volatile AppDatabase INSTANCE;
@@ -19,6 +19,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, DB_NAME)
                             .allowMainThreadQueries()
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

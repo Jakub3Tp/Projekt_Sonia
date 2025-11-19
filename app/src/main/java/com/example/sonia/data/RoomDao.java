@@ -1,6 +1,9 @@
 package com.example.sonia.data;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
@@ -22,3 +25,5 @@ public interface RoomDao {
     @Query("SELECT * FROM rooms WHERE roomId = :id")
     RoomWithDevices getRoomWithDevices(long id);
 }
+
+
